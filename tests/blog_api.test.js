@@ -53,6 +53,20 @@ test('a blog can be added', async () => {
     expect(body.map(blog => blog.likes)).toContain(newBlog.likes)
 })
 
+test('adding a blog with no likes property defaults to zero', async () => {
+    const newBlog = {
+        title: "no likes",
+        author: "test_author",
+        url: "www.blogTest.com"
+    }
+
+    await api.post('/api/blogs').send(newBlog)
+  
+    const response = await api.get('/api/blogs')
+    const target = response.body.find(blog => blog.title === newBlog.title)
+    expect(target.likes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
