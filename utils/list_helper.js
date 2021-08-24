@@ -52,10 +52,39 @@ const mostBlogs = (blogs) => {
         blogs: blogCount
     }
 }
+
+const mostLikes = (blogs) => {
+    const map = new Map()
+    blogs.forEach(blog => {
+        map.has(blog.author) ? 
+        map.set(blog.author, map.get(blog.author) + blog.likes) : 
+        map.set(blog.author, blog.likes)
+    })
+
+    const authorCounts = [...map]
+
+    if(authorCounts.length === 0) {
+        return {}
+    }
+
+    var [maxAuthor, likeCount] = authorCounts[0]
+    for(const [currAuthor, currLikeCount] of authorCounts) {
+        if (currLikeCount > likeCount) {
+            maxAuthor = currAuthor
+            likeCount = currLikeCount
+        }
+    }
+
+    return {
+        author: maxAuthor,
+        likes: likeCount
+    }
+}
   
   module.exports = {
     dummy, 
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
   }
