@@ -67,6 +67,18 @@ test('adding a blog with no likes property defaults to zero', async () => {
     expect(target.likes).toBe(0)
 })
 
+test('adding blog with no author and title gives 400 bad request', async () => {
+    const newBlog = {
+        url: "www.no_author_or_title.com",
+        likes: 1
+    }
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
