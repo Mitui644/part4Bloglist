@@ -79,6 +79,20 @@ test('adding blog with no author and title gives 400 bad request', async () => {
       .expect(400)
 })
 
+test('a blog can be deleted', async () => {
+    var response = await api.get('/api/blogs') 
+    const blog = response.body[0]
+  
+    await api
+      .delete(`/api/blogs/${blog.id}`)
+      .expect(204)
+  
+    response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(helper.initialBlogs.length - 1)
+    const contents = response.body.map(blog => blog.title)
+    expect(contents).not.toContain(blog.title)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
