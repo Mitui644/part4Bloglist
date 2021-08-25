@@ -46,6 +46,17 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 })
 
 blogsRouter.put('/:id', async (request, response, next) => {
+  const user = request.user
+  if(!user) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const targetBlog = await Blog.findById(request.params.id)
+
+  if(targetBlog.user.toString() !== user._id.toString()) {
+    return response.status(401).json({ error: 'not authorized tot delete blog' })
+  }
+
   const blog = {
     title: request.body.title,
     author: request.body.author,
@@ -54,8 +65,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-
-    response.json(updatedBlog)
+  response.json(updatedBlog)
 })
 
 module.exports = blogsRouter
